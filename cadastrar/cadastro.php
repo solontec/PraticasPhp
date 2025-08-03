@@ -16,15 +16,20 @@ if($conn->connect_error){
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $nome = $_POST['nome'] ?? '';
     $email = $_POST['email'] ?? '';
-    $senha = password_hash($_POST['senha'] ?? '', PASSWORD_DEFAULT); //VARIAVEL JÁ DECLARADA COM HASH PARA CRIPTOGRAFAR A SENHA DIGITADA
+    $senha = password_hash($_POST['senha'] ?? '', PASSWORD_DEFAULT);
+    
+    
+    //VARIAVEL JÁ DECLARADA COM HASH PARA CRIPTOGRAFAR A SENHA DIGITADA
+
 
 $sql = "INSERT INTO usuarios (nome, senha, email) VALUES (?, ?, ?)";  // sempre passar como paramtro e n variavel
 $stmt = $conn->prepare($sql); // aqui ele prepara o banco  e envia a estrutura da consulta para o sql com os ???
 
-if($stmt){
-    die("erro no prepare");
-    $conn->error;
+if(!$stmt){ // caso de false a preparação no banco da erro
+    die("erro no prepare" . $conn->error);
+    
 } 
+        //se der certo ele prepara e segue 
     // se preparar corretamente
     $stmt->bind_param("sss", $nome, $email, $senha); // envia os parametros certos batendo ??? com nome email e senha
     $stmt->execute();
@@ -57,6 +62,9 @@ $conn->close();
 
         
         <button type="submit"> Cadastrar</button>
+
+
+        <h1> <?php $nome?> </h1>
     </form>
 </body>
 </html>
